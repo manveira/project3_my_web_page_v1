@@ -1,7 +1,7 @@
 variable "environment" {
   description = "Environment name for deployment"
   type        = string
-  default     = "manve"
+  default     = "web-page"
 }
 
 variable "aws_region" {
@@ -54,11 +54,11 @@ EOF
 variable "ssh_key" {
   description = "ssh key name"
   type        = string
-  default     = "manve-key"
+  default     = "manve-key-web-page"
 }
 
 variable "instance_type" {
   description = "Jenkins EC2 instance type"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 }

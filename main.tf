@@ -57,7 +57,7 @@ data "external" "myipaddr" {
 # SG Manve EC2
 resource "aws_security_group" "manve_security_group" {
   name        = "${var.environment}-SG"
-  description = "SG for manve EC2"
+  description = "SG for manve EC2 web page"
   vpc_id      = aws_vpc.vpc.id
 
   # SSH 
@@ -83,15 +83,6 @@ resource "aws_security_group" "manve_security_group" {
     description = "Allow HTTPS from MY Public IP"
     from_port   = 443
     to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["${data.external.myipaddr.result.ip}/32"]
-  }
-
-  # 8080 Port
-  ingress {
-    description = "Allow access to Jenkis from My IP"
-    from_port   = 8080
-    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["${data.external.myipaddr.result.ip}/32"]
   }
