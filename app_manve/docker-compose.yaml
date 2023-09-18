@@ -1,12 +1,101 @@
 
-version: "2"
+version: "3"
+
 services:
-  info:
+  wp:
+    container_name: app_manve_front
+    image: wordpress:latest
+    ports:
+     - 81:80
+    volumes:
+      - ./config/php.conf.uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - cristiancasis_front_data:/var/www/html
+    environments:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: "${DB_NAME}"
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: "${DB_ROOT_PASSWORD}"
+      VIRTUAL_PORT: 81
+    depends_on:
+      - db          
+
+  wpcli:
+    image: wordpress:cli
+    user: xfs
+    volumes:
+      - cristiancasis_front_data:/var/www/html
+    depends_on:
+      - db
+      - wp          
+
+  db:
+    container_name: db
+    image: mysql:latest
+    ports:
+     - 3306:3306
+    command: [
+        '--default_authentication_plugin=mysql_native_password',
+        '--character-set-server=utf8mb4',
+        '--collation-server=utf8mb4_unicode_ci',
+    ]
+    volumes:
+      - ./wp-data:/docker-entrypoint-initdb.d
+      - cristiancasis_db_data:/var/lib/mysql    
+    environments:
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+ 
+  nginx:
     build: .
+    container_name: nginx
+    ports:
+     - 80:80
+     - 443:443   
+    volumes:
+      - ./data/nginx:/etc/nginx/conf.d
+      - cristiancasis_front_data:/var/www/html:rw
+      - ./data/certbot/conf:/etc/letsencrypt      
+      - ./data/certbot/www:/var/www/certbot
+      - ./letsencrypt/conf:/etc/letsencrypt
+      - /opt/project3_my_web_page_v1/app_manve:/var/www/info:rw
+  certbot:
+    container_name: certbot
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot       
+
+  letsencrypt:
+    restart: always
+    image: vdhpieter/letsencrypt-webroot
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./letsencrypt/conf:/etc/letsencrypt
+      - ./letsencrypt/html:/tmp/letsencrypt
+      - cristiancasis_front_data:/var/www/html
+      - /opt/project3_my_web_page_v1/app_manve:/var/www/info:rw      
+    links:
+      - nginx
+    environments:
+      - DOMAINS=app_manve www.jveira.com jveira.com
+      - EMAIL=manveira159@gmail.com
+      - WEBROOT_PATH=/var/www/info #/var/www/html
+      - EXP_LIMIT=30
+      - CHECK_FREQ=30
+      - CHICKENEGG=1
+      - STAGING=0      
+
+  info:
+    build: "/opt/project3_my_web_page_v1/app_manve"
     container_name: info
     volumes:
-      - "./app:/src/app"
+      - "/opt/project3_my_web_page_v1/app_manve:/src/app"
     ports:
      - 3000:3000
     restart: always
     stdin_open: true 
+
+volumes:
+  cristiancasis_db_data:
+  cristiancasis_front_data:    
