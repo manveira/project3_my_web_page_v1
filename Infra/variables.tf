@@ -1,7 +1,7 @@
 variable "environment" {
   description = "Environment name for deployment"
   type        = string
-  default     = "web-page"
+  default     = "web-page2"
 }
 
 variable "aws_region" {
@@ -54,7 +54,7 @@ EOF
 variable "ssh_key" {
   description = "ssh key name"
   type        = string
-  default     = "manve-key-web-page"
+  default     = "manve-key-web-page2"
 }
 
 variable "instance_type" {
