@@ -10,11 +10,11 @@ services:
     volumes:
       - ./config/php.conf.uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - cristiancasis_front_data:/var/www/html
-    environments:
+    environment:
       WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_NAME: "${DB_NAME}"
+      WORDPRESS_DB_NAME: "manve"
       WORDPRESS_DB_USER: root
-      WORDPRESS_DB_PASSWORD: "${DB_ROOT_PASSWORD}"
+      WORDPRESS_DB_PASSWORD: "manve"
       VIRTUAL_PORT: 81
     depends_on:
       - db          
@@ -41,10 +41,10 @@ services:
     volumes:
       - ./wp-data:/docker-entrypoint-initdb.d
       - cristiancasis_db_data:/var/lib/mysql    
-    environments:
-      MYSQL_DATABASE: "${DB_NAME}"
-      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
- 
+    environment:
+      MYSQL_DATABASE: "manve"
+      MYSQL_ROOT_PASSWORD: "manve"
+
   nginx:
     build: .
     container_name: nginx
@@ -58,6 +58,7 @@ services:
       - ./data/certbot/www:/var/www/certbot
       - ./letsencrypt/conf:/etc/letsencrypt
       - /opt/project3_my_web_page_v1/app_manve:/var/www/info:rw
+
   certbot:
     container_name: certbot
     image: certbot/certbot
@@ -77,7 +78,7 @@ services:
       - /opt/project3_my_web_page_v1/app_manve:/var/www/info:rw      
     links:
       - nginx
-    environments:
+    environment:
       - DOMAINS=app_manve www.jveira.com jveira.com
       - EMAIL=manveira159@gmail.com
       - WEBROOT_PATH=/var/www/info #/var/www/html
