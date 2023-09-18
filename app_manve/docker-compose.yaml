@@ -54,7 +54,7 @@ services:
     volumes:
       - ./data/nginx:/etc/nginx/conf.d
       - cristiancasis_front_data:/var/www/html:rw
-      - ./data/certbot/conf:/etc/letsencrypt      
+      # - ./data/certbot/conf:/etc/letsencrypt      
       - ./data/certbot/www:/var/www/certbot
       - ./letsencrypt/conf:/etc/letsencrypt
       - /opt/project3_my_web_page_v1/app_manve:/var/www/info:rw
